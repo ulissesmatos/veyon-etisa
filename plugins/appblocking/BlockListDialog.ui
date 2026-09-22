@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BlockListDialog</class>
+ <widget class="QDialog" name="BlockListDialog">
+  <property name="windowTitle">
+   <string>Block applications and websites</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="processLabel">
+     <property name="text">
+      <string>Applications to block (one per line). On Windows use the executable file name, e.g. &quot;steam.exe&quot;; on Linux use the process name, e.g. &quot;steam&quot;.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPlainTextEdit" name="processListEdit"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="domainLabel">
+     <property name="text">
+      <string>Websites to block (one domain per line), e.g. &quot;youtube.com&quot;.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPlainTextEdit" name="domainListEdit"/>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>BlockListDialog</receiver>
+   <slot>accept()</slot>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>BlockListDialog</receiver>
+   <slot>reject()</slot>
+  </connection>
+ </connections>
+</ui>
