@@ -1,0 +1,76 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    # Weekly scan so newly disclosed query patterns get applied even
+    # without new commits.
+    - cron: '30 4 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  analyze-cpp:
+    name: Analyze (C/C++)
+    runs-on: ubuntu-latest
+    container: veyon/ci.linux.debian.11
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: c-cpp
+          queries: security-extended
+
+      - name: Build Veyon
+        env:
+          CMAKE_FLAGS: -DWITH_QT6=OFF -DWITH_BUNDLED_LIBVNC=ON
+        run: |
+          mkdir -p /tmp/build
+          cd /tmp/build
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr $CMAKE_FLAGS $GITHUB_WORKSPACE
+          ninja
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:c-cpp"
+
+  analyze-python:
+    name: Analyze (Python)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          queries: security-extended
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:python"

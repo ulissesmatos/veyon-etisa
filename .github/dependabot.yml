@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # Keep GitHub Actions used in our workflows up to date.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Track updates to the vendored C/C++ dependencies (VNC stack, LDAP, etc.)
+  # so security fixes upstream aren't missed even though this fork doesn't
+  # carry local patches yet.
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Python SDK for the web API plugin.
+  - package-ecosystem: "pip"
+    directory: "/plugins/webapi/python"
+    schedule:
+      interval: "weekly"
